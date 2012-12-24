@@ -1,0 +1,35 @@
+A user can create a new project:
+
+	A user can add a client name
+
+	A user can add a project name
+
+	A user can specify internal or external
+
+	The job number is automatically incremented
+
+	A user can specify what facets of a project are created:
+
+		A folder structure on the design server or dropbox
+
+			An alias is created on the design server if the project is on dropbox
+
+		A folder structure in Imports
+
+		A folder structure in Outputs
+
+		A folder structure in FCP
+
+		A tick job
+
+		A highrise project
+
+		A job number on the wiki
+
+A user can edit an existing project.
+
+	A user can add a facet to an existing project if it doesn't exist yet
+
+	A user can change the project name
+
+	A user can change a project from internal to external
