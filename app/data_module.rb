@@ -1,3 +1,5 @@
+require 'json'
+
 class DataModule
 
 	def initialize(file_name)
@@ -36,10 +38,10 @@ class JSONDataModule < DataModule
 
 	def load
 		if File.exists?(@data_file)
-			#
 			puts ">> Loading #{@data_file}. <<"
 			data = []
-			#data = JSON.parse(File.read(@data_file)) unless File.zero?(@data_file)
+			data = JSON.parse(File.read(@data_file), :symbolize_names => true) unless File.zero?(@data_file)
+			data
 		else
 			File.new(@data_file, 'w')
 			puts ">> #{@data_file} doesn't exist. Creating it. <<"

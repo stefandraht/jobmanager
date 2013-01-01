@@ -1,14 +1,12 @@
 
 class Project
-	attr_accessor :content
+	attr_accessor :client, :project, :internal, :job_number
 
 	def initialize(param_hash)
-		# dynamically create instance variables from a hash
-		param_hash.each do |name, value|
-			self.instance_variable_set("@#{name}", value)  # create instance variable
-			self.class.send(:define_method, name, proc{self.instance_variable_get("@#{name}")})		# create getter method for new variable
-      self.class.send(:define_method, "#{name}=", proc{|value| self.instance_variable_set("@#{name}", value)})	# create setter method for variable
-		end
+		@client = param_hash[:client]
+		@project = param_hash[:project]
+		@internal = param_hash[:internal] ? true : false
+		@job_number = param_hash[:job_number]
 	end
 
 	def to_s
@@ -16,17 +14,17 @@ class Project
 	end
 
 	def name
-		"#{client}_#{project}"
+		prefix = @internal ? 'M' : 'J'
+		formatted_job_number = "%04d" % @job_number
+		"#{prefix}#{formatted_job_number}_#{@client}_#{@project}"
 	end
 
 	def to_json(*arg)
-		{:client=>@client, :project=>@project}.to_json(*arg)
-		# self.instance_variables.inject({}) {|hash,var| hash[var[1..-1].to_sym] = instance_variable_get(var); hash}
-		# self.instance_variables.each do |var|
-		# 	hash[var.to_s.delete("@").to_sym] = self.instance_variable_get(var)
-		# end
-		# puts hash
-		# hash.to_json(*arg)
+		{
+			:number => @job_number,
+			:client => @client, 
+			:project => @project
+		}.to_json(*arg)
 	end
 
 end

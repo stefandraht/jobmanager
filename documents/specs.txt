@@ -1,1 +1,8 @@
+saving sorts and appends all items without the "saved" flag
+
+loading gets all the jobs and adds a "saved" flag
+
+load_last loads the last item from the database
+
+interface commands load just the necessary data each time (think in terms of requests)
 

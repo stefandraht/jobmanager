@@ -1,6 +1,6 @@
-require_relative 'project'
+require_relative 'projects'
 require_relative 'data_module'
-require 'json'
+require_relative 'initializer'
 
 class Projector
 	# @projects
@@ -8,56 +8,31 @@ class Projector
 	attr_accessor :data_module
 
 
-	def initialize(file)
+	def initialize(file = nil)
 		puts ">> Initializing Projector. <<"
 
-		@projects = []
-		@data_module = JSONDataModule.new(file)
+		config()
 
-		@data_module.load.each do |item|
-			create_project(item)
+		@projects = Projects.new
+		if file
+			@data_module = JSONDataModule.new(file)
+			@data_module.load.each do |item|
+				create_project(item)
+			end
 		end
+		
 	end
 
-	def create_project(hash)
-		@projects << Project.new(hash)
+	def create_project(properties_hash)
+		@projects << properties_hash
 	end
 
 	def write
 		@data_module.save(@projects)
 	end
 
-
-end
-
-
-class CommandLineInterface
-	
-	def initialize
-		@application = Projector.new('database/jobs.db')
-		@application.create_project({:client=>"DDB", :project=>"test"})
-	end
-
-	def add
-		puts ">> Adding project <<"
-		@application.create_project ARGV[1]
-		list()
-	end
-
-	def list
-		puts ">> Listing projects: <<"
-
-		@application.projects.each do |project|
-			puts "#{project.name}"
-		end
-	end
-
-	def write
-		@application.write
+	def config
+		#@config = Initializer.new('../config/config.yml')
 	end
 
 end
-
-cli = CommandLineInterface.new
-cli.send ARGV[0]
-cli.write
