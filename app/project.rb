@@ -10,21 +10,26 @@ class Project
 	end
 
 	def to_s
-		@content
+		{job_number: @job_number, client: @client, project: @project}.to_s
 	end
 
 	def name
 		prefix = @internal ? 'M' : 'J'
 		formatted_job_number = "%04d" % @job_number
-		"#{prefix}#{formatted_job_number}_#{@client}_#{@project}"
+		client = @client.sub(' ', '_')
+		project = @project.sub(' ', '_')
+		"#{prefix}#{formatted_job_number}_#{client}_#{project}"
 	end
 
 	def to_json(*arg)
 		{
-			:number => @job_number,
+			:job_number => @job_number,
 			:client => @client, 
 			:project => @project
 		}.to_json(*arg)
 	end
 
+	def hashify
+		{job_number: @job_number, client: @client, project: @project}
+	end
 end

@@ -6,3 +6,10 @@ load_last loads the last item from the database
 
 interface commands load just the necessary data each time (think in terms of requests)
 
+
+
+Projector
+==================
++ get_all_projects
++ create_new_project
++ set_database

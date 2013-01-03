@@ -1,38 +1,33 @@
-require_relative 'projects'
 require_relative 'data_module'
-require_relative 'initializer'
+require_relative 'projects'
 
 class Projector
-	# @projects
-	attr_reader :projects
-	attr_accessor :data_module
 
-
-	def initialize(file = nil)
-		puts ">> Initializing Projector. <<"
-
-		config()
-
-		@projects = Projects.new
-		if file
-			@data_module = JSONDataModule.new(file)
-			@data_module.load.each do |item|
-				create_project(item)
-			end
-		end
+	def initialize
 		
 	end
+	
 
-	def create_project(properties_hash)
-		@projects << properties_hash
+	# return an array containing all the projects from the db
+	def get_all_projects
+		@data_module.load(Projects.new)
 	end
 
-	def write
-		@data_module.save(@projects)
+
+	# create a new project in the db, based on parameter hash
+	def create_new_project(param_hash, component_flags = nil)
+		@data_module.save(param_hash)
 	end
 
-	def config
-		#@config = Initializer.new('../config/config.yml')
+	#clear the current database
+	def clear
+		@data_module.clear()
+	end
+
+	# set the database path
+	# create it if it doesn't exist
+	def set_database(file)
+		@data_module = JSONDataModule.new file
 	end
 
 end

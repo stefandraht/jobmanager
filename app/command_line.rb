@@ -30,25 +30,35 @@ end
 class CommandLineInterface
 	
 	def initialize
-		@application = Projector.new('database/jobs.db')
+		@application = Projector.new
+		@application.set_database('database/jobs.db')
 	end
 
 	def add(options)
 		puts ">> Adding project <<"
-	  @application.create_project options
+	  @application.create_new_project options
 		list()
 	end
 
 	def list
 		puts ">> Listing projects: <<"
 
-		@application.projects.each do |project|
-			puts "#{project.name}"
+		projects = @application.get_all_projects()
+
+		if projects
+			projects.each { |project| puts "#{project.name}" }
+		else
+			puts "* empty database *"
 		end
 	end
 
 	def write
 		@application.write
+	end
+
+	def clear
+		@application.clear()
+		list()
 	end
 
 	def parse_options(args)
@@ -64,4 +74,4 @@ end
 
 cli = CommandLineInterface.new
 cli.parse_options ARGV
-cli.write
+#cli.write
