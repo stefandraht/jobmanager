@@ -1,12 +1,12 @@
 A user can create a new project:
 
-	A user can add a client name
+!	A user can add a client name
 
-	A user can add a project name
+!	A user can add a project name
 
 	A user can specify internal or external
 
-	The job number is automatically incremented
+!	The job number is automatically incremented
 
 	A user can specify what facets of a project are created:
 
@@ -28,7 +28,7 @@ A user can create a new project:
 
 A user can edit an existing project.
 
-	A user can add a facet to an existing project if it doesn't exist yet
+	A user can add a component to an existing project if it doesn't exist yet
 
 	A user can change the project name
 

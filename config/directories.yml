@@ -1,0 +1,35 @@
+production:
+  design_server:
+    AE:
+    Artwork:
+    Boards:
+    C4D:
+    Maya:
+    Reference:
+      Agency References:
+      Mode Project References:
+    Source Material:
+  edit_server:
+    Imports:
+      ASSETS:
+      AUDIO:
+        MIXES:
+        MUSIC:
+        SFX:
+        VO-FINAL:
+        VO-SCRATCH:
+      FOOTAGE:
+        + CAMERA ORIGINAL:
+      GFX OUTPUTS:
+      STOCK:
+        Comps:
+        Purchased:
+    Outputs:
+      CLIENT REVIEW:
+      DELIVERABLES:
+      FOR AUDIO:
+      FOR CAPTIONS:
+      FOR COLOR:
+      FOR DVD:
+      FOR GFX:
+    FCP Projects:

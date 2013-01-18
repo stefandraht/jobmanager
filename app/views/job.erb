@@ -1,0 +1,11 @@
+<% if @project %>
+	<h1><%= @project.name %></h1>
+	<h2>client: <%= @project.client %></h2>
+	<h2>project: <%= @project.project_name %></h2>
+	<h3>components:</h3>
+		<ul>
+			<% @components.each do |component| %>
+				<li><%= component %></li>
+			<% end %>
+		</ul>
+<% end %>

@@ -1,5 +1,5 @@
 require 'optparse'
-require_relative 'projector'
+require_relative 'requirements'
 
 class OptParser
 
@@ -30,13 +30,12 @@ end
 class CommandLineInterface
 	
 	def initialize
-		@application = Projector.new
-		@application.set_database('database/jobs.db')
+		@application = Projector.new(:production)
 	end
 
 	def add(options)
 		puts ">> Adding project <<"
-	  @application.create_new_project options
+	  @application.create_project(options, {:design_server => true, :edit_server => true})
 		list()
 	end
 
@@ -47,6 +46,18 @@ class CommandLineInterface
 
 		if projects
 			projects.each { |project| puts "#{project.name}" }
+		else
+			puts "* empty database *"
+		end
+	end
+
+	def getbyid
+		puts ">> Project: <<"
+
+		project = @application.get_project_by_id(1)
+
+		if project
+			puts project.name
 		else
 			puts "* empty database *"
 		end

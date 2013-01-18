@@ -1,0 +1,10 @@
+production:
+  database: 'database/jobs.db'
+  #design_server: '/Volumes/Shared Storage/Dropbox'
+  #edit_server: '/Volumes/Shared Storage/Edit Shared Storage'
+  design_server: 'database/test_server'
+  edit_server: 'database/test_server'
+test:
+  database: 'database/test.db'
+  design_server: 'database/design_test'
+  edit_server: 'database/edit_test'  

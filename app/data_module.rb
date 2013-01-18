@@ -1,49 +1,63 @@
 require 'json'
 
-class DataModule
+# Baseclass for DataModules
+module DataModule
 
-	def initialize(file_name)
-		@data_file = file_name
-		File.new(file_name, 'w') unless File.exists? file_name
+	def load
 	end
 
-	def load(projects_array)
-		# if File.exists?(@data_file)
-		# 	puts ">> Loading #{@data_file}. <<"
-
-		# 	#lines = []
-		# 	File.read(@data_file).each_line do |line|
-		# 		projects_array << line
-		# 	end
-		# 	projects_array
-		# end
+	def save(data)
 	end
 
-	def save(data_array)
-		# puts ">> Saving data to #{@data_file} <<"
+	# Public: Constructor for DataModule
+	#
+	# file_name  -  The path to the database file.
+	#
+	# Examples
+	#
+	#   DataModule.new
+	#
+	# def initialize(file_name)
+	# 	@data_file = file_name
+	# 	File.new(file_name, 'w') unless File.exists? file_name
+	# end
 
-		# content = ""
-		# File.open(@data_file, 'w') do |f|
-		# 	f.write(data_array.join("\n"))
-		# end
-	end
-
-	def clear
-		File.delete(@data_file) if File.exists?(@data_file)
+	# Public: Clear the database.
+	#
+	# Examples
+	#
+	#   clear_database()
+	#   # => true
+	#
+	# Returns true or false
+	def clear_database
+		begin
+			File.delete( CONFIG[ENVIRONMENT][:database] ) if File.exists?(@data_file)
+			true
+		rescue
+			false
+		end
 	end
 
 end
 
-class JSONDataModule < DataModule
+module JSONDataModule
+	include DataModule
 
+	# Public: Load and parse json data from the database.
+	#
+	# Examples
+	#
+	#   load_from_database()
+	#   # => [Hash, Hash, Hash]
+	#
+	# Returns an array of hashes
+	def load_from_database
+		data_file = CONFIG[ENVIRONMENT][:database]
+		if File.exists?( data_file )
+			data = JSON.parse(File.read( data_file ), :symbolize_names => true) unless File.zero?( data_file )
 
-	# load/parse all the json data from the db
-	def load(projects_array=nil)
-		if File.exists?(@data_file)
-			puts ">> Loading #{@data_file}. <<"
-			data = JSON.parse(File.read(@data_file), :symbolize_names => true) unless File.zero?(@data_file)
-			#projects_array = Projects.new unless projects_array
-			projects_array ||= []
+			projects_array = []
 			if data.class == Array
 				projects_array.concat data
 			else
@@ -54,23 +68,29 @@ class JSONDataModule < DataModule
 	end
 
 
-	# append a hash or an array of hashes representing new projects to the db
-	def save(data)
-		puts ">> Saving data to #{@data_file} <<"
-		original_data = load()
+	# Public: Save data as json to the database.
+	#
+	# data  -  The data object to be converted to JSON and saved.
+	#
+	# Examples
+	#
+	#   save_to_database(Project.new)
+	#   # => true
+	#
+	# Returns true or false
+	def save_to_database(data)
+		data_file = CONFIG[ENVIRONMENT][:database]
+		begin
+			puts ">> Saving data to #{@data_file} <<"
+			original_data = load()
 
-		projects = Projects.new
-		original_data.each {|p| projects << p} if original_data.length > 0
-
-		if data.class == Array
-			data.each {|p| projects << p}
-		else
-			projects << data
-		end
-
-		File.new(@data_file, 'w') unless File.exists? @data_file
-		File.open(@data_file, 'w') do |f|
-			f.write(JSON.generate(projects))
+			File.new(data_file, 'w') unless File.exists? data_file
+			File.open(data_file, 'w') do |f|
+				f.write(JSON.generate(data))
+			end
+			true
+		rescue
+			false
 		end
 	end
 

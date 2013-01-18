@@ -1,33 +1,47 @@
-require_relative 'data_module'
 require_relative 'projects'
+require_relative 'Initializer'
+
+CONFIG_FILES = ["config", "directories"]
 
 class Projector
 
-	def initialize
-		
+
+	def initialize(environment)
+		Initializer.init('../../config/')
+		eval("::ENVIRONMENT = environment")
 	end
 	
 
-	# return an array containing all the projects from the db
+
 	def get_all_projects
-		@data_module.load(Projects.new)
+		projects.all
 	end
 
 
-	# create a new project in the db, based on parameter hash
-	def create_new_project(param_hash, component_flags = nil)
-		@data_module.save(param_hash)
+
+	def get_project_by_id(id)
+		projects.get_by_id(id)
 	end
 
-	#clear the current database
+
+
+	def create_project(param_hash, component_flags = nil)
+		param_hash[:components] = component_flags
+		projects.build_project(param_hash)
+	end
+
+
+
 	def clear
-		@data_module.clear()
+		projects.clear_database()
 	end
 
-	# set the database path
-	# create it if it doesn't exist
-	def set_database(file)
-		@data_module = JSONDataModule.new file
+
+
+	private
+
+	def projects
+		Projects.new
 	end
 
 end
