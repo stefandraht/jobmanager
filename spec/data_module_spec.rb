@@ -1,66 +1,97 @@
 require 'rspec'
-require_relative '../app/data_module'
-require_relative '../app/projects'
+require 'json'
+require_relative '../lib/application/data_module'
 
-# describe "JSONDataModule" do
-# 	FILE = 'database/test.db'
+FILE = 'database/test.db'
 
-# 	before do
-# 		File.delete(FILE) if File.exists?(FILE)
-# 		@data_module = JSONDataModule.new(FILE)
-# 	end
+shared_examples_for DataModule do
 
-# 	after :all do
-# 		File.delete(FILE) if File.exists?(FILE)
-# 	end
+	subject { data_module }
 
-# 	####################################
-# 	# #load
-# 	####################################
-# 	describe "#load" do
+	it { should respond_to :load_data }
 
-# 		subject { @data_module.load() }
+	it { should respond_to :save_data }
+	
+	describe ".load_data" do
+		subject { data_module.load_data(FILE) }
 
-# 		context "when database is empty" do
+		it { should respond_to :each }
+	end
 
-# 			it { should be_empty }
+	describe ".save_data" do
 
-# 		end
+	end
 
-# 		context "when database contains items" do
-# 			let(:db_items) {
-# 				[
-# 					{job_number: 1, client: "TestClient1", project: "Test Project", components: nil},
-# 					{job_number: 2, client: "TestClient2", project: "Test Project", components: nil}
-# 				]
-# 			}
+end
 
-# 			before do
-# 				File.open(FILE, 'w') do |f|
-# 					f.write(JSON.generate(db_items))
-# 				end
-# 			end
+def read_database
+	return_data = JSON.parse(File.read(FILE), :symbolize_names => true) if File.exists?(FILE)
+	if return_data
+		return_data.each do |item|
+			item[:components].collect! { |i| i.to_sym }
+		end
+	end
+end
 
-# 			it { should include(db_items.first) }
+def populate_database(data)
+	File.open(FILE, 'w') do |f|
+		f.write(JSON.generate(data))
+	end
+end
 
-# 			it { should include(db_items.last) }
-# 		end
+describe JSONDataModule do
+	let(:data_module) { JSONDataModule }
+	it_behaves_like DataModule
 
-# 	end
+	describe ".load_data" do
+		subject { data_module.load_data(FILE) }
 
-# 	####################################
-# 	# #save
-# 	####################################
-# 	describe "#save" do
-		
-# 		subject { 
-# 			@data_module.save(item) 
-# 			return_data = JSON.parse(File.read(FILE), :symbolize_names => true)  if File.exists?(FILE)
-# 		}
+		let(:data) {
+			[
+				{id: 1, client: "test client", title: "test title", status: "external", components: [:design_server, :edit_server]},
+				{id: 2, client: "test client2", title: "test title2", status: "internal", components: [:design_server]}
+			]
+		}
 
-# 		let(:item) { {client: "TestClient1", project: "Test Project"} }
+		before :each do 
+			populate_database(data)
+		end
 
-# 		it { should include(item) }
+		it "should load the correct amount of data from the database" do
+			subject.should have(2).items
+		end
 
-# 	end
-# end
+		it "should load the correct data fom the database" do
+			subject.should include data.first
+		end
+	end
+
+	describe ".save_data" do
+
+		before :each do 
+			File.delete(FILE) if File.exists?(FILE)
+		end
+
+		after :all do
+			File.delete(FILE) if File.exists?(FILE)
+		end
+
+		let(:data) {
+			[
+				{id: 1, client: "test client", title: "test title", status: "external", components: [:design_server, :edit_server]},
+				{id: 2, client: "test client2", title: "test title2", status: "internal", components: [:design_server]}
+			]
+		}
+
+		it "the database should have 2 items" do
+			data_module.save_data(data, FILE)
+			read_database.should have(2).items
+		end
+
+		it "the database should contain all the data" do
+			data_module.save_data(data, FILE)
+			read_database.should include data.first
+		end
+
+	end
+end

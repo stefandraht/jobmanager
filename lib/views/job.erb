@@ -1,0 +1,15 @@
+<% if @project %>
+	<h1><%= @project.name %></h1>
+	<h2>client: <%= @project.client %></h2>
+	<h2>project: <%= @project.title %></h2>
+	
+	<% unless @project.components.empty? %>
+		<h3>components:</h3>
+		<ul>
+			<% @project.components.each do |component| %>
+				<li><%= component.to_s %></li>
+			<% end %>
+		</ul>
+	<% end %>
+		
+<% end %>

@@ -1,152 +1,113 @@
 require 'rspec'
-require 'spec_helper'
-require_relative '../app/projects'
+require_relative '../lib/application/projects'
 
-describe "Projects" do
-	FILE = 'database/test.db'
+class ProjectDouble
+	attr_accessor :id, :name
 
-	before :all do
-		Initializer.init('../../config/')
-		::ENVIRONMENT = :test
+	def initialize(id=nil)
+		@id = id
 	end
+end
 
-	before :each do
-		@projects = Projects.new
-	end
 
-	####################################
-	# #build_project
-	####################################
-	describe "#build_project" do
+describe Projects do
 
-		subject { @projects.build_project(param_hash) }
+	it { should respond_to :each }
 
-		context "when it receives a valid hash" do
-			let(:param_hash) { {client: "Test Client", project: "Test Project", components: nil} }
+	it { should respond_to :size }
 
-			it { should be_true }
-		end
+	context "when a single project is passed" do
+		let(:project) { ProjectDouble.new }
 
-		context "when it receives an invalid hash" do
-			let(:param_hash) { {client: "Test Client2", foo: "bar"} }
+		subject { Projects.new(project) }
 
-			it { should  be_false }
-		end
+		it { should include project }
 
-	end
+		it { should have(1).items }
 
-	####################################
-	# #all
-	####################################
-	describe "#all" do
+		context "and project has id already" do
 
-		before :each do
-			@projects = Projects.new
-		end
+			subject { Projects.new(ProjectDouble.new(10)) }
 
-		subject { @projects.all.inject([]) {|a, i| a<<i.hashify } }
-
-		context "when the database is empty" do
-
-			before :all do 
-				module JSONDataModule
-					def load_from_database
-						[]
-					end
-				end
+			it "should have a project with id = 10" do
+				subject.first.id.should be 10
 			end
 
-			it { should be_an_instance_of Array }
-
-			it { should be_empty }
-
 		end
 
-		context "when the database contains items" do
-
-			before :all do 
-				@data = [
-						{job_number: 1, client: "TestClient1", project: "Test Project", components: nil},
-						{job_number: 2, client: "TestClient2", project: "Test Project", components: nil}
-					]
-
-				module JSONDataModule
-					def load_from_database
-						[
-							{job_number: 1, client: "TestClient1", project: "Test Project", components: nil},
-							{job_number: 2, client: "TestClient2", project: "Test Project", components: nil}
-						]
-					end
-				end
+		context "and project doesn't already have id" do
+			it "should have a project with id = 1" do
+				subject.first.id.should be 1
 			end
-
-			it { should be_an_instance_of Array }
-
-			it { should include @data.first }
-
-			it { should include @data.last }
 		end
-
 	end
 
-	####################################
-	# #get_by_number
-	####################################
+	context "when an array of projects is passed" do
+
+		let(:projects_array) { [ProjectDouble.new, ProjectDouble.new] }
+
+		subject { Projects.new(projects_array) }
+
+		it { should include projects_array.first }
+
+		it { should include projects_array.last }
+
+		context "and projects have ids already" do
+			let(:projects_array) { 
+				projectA = ProjectDouble.new(10)
+				projectB = ProjectDouble.new(11)
+				[projectA, projectB] 
+			}
+
+			it "should have a project with id = 10" do
+				subject.first.id.should be 10
+			end
+
+			it "should have a project with id = 11" do
+				subject.last.id.should be 11
+			end
+
+		end
+
+		context "and projects don't already have ids" do
+
+			it "should have a project with id = 1" do
+				subject.first.id.should be 1
+			end
+
+			it "should have a project with id = 2" do
+				subject.last.id.should be 2
+			end
+		end
+	end
+
+
 	describe "#get_by_id" do
 
-		let(:job_number) { 1 }
+		let(:projects_array) { [ProjectDouble.new(1), ProjectDouble.new(2)] }
 
-		subject { @projects.get_by_id(job_number) }
+		subject { Projects.new(projects_array).get_by_id(1) }
 
-		context "when the database is empty" do
+		it { should respond_to :name }
 
-			before :all do 
-				module JSONDataModule
-					def load_from_database
-						[]
-					end
-				end
-			end
-
-			#it { should be_an_instance_of NilClass }
-
-			#it { should be_nil }
-
-		end
-
-		context "when the databse contains items" do
-
-			before :all do 
-				@data = [
-					{job_number: 1, client: "TestClient1", project: "Test Project", components: nil},
-					{job_number: 2, client: "TestClient2", project: "Test Project", components: nil}
-				]
-
-				module JSONDataModule
-					def load_from_database
-						[
-							{job_number: 1, client: "TestClient1", project: "Test Project", components: nil},
-							{job_number: 2, client: "TestClient2", project: "Test Project", components: nil}
-						]
-					end
-				end
-			end
-
-			it { should be_an_instance_of Project }
-
-			it { subject.job_number.should == 1 }
-
-		end
+		it { subject.id.should be 1 }
 
 	end
 
-	####################################
-	# #clear_database
-	####################################
-	describe "#clear_database" do
+	describe "#sort_projects" do
+		let(:projects_array) { [ProjectDouble.new(2), ProjectDouble.new(1)] }
 
-		subject { @projects.clear_database }
+		subject { Projects.new(projects_array).sort_projects }
 
+		it { subject.first.id.should be 1 }
+	end
+
+	describe "last_id" do
+		let(:projects_array) { [ProjectDouble.new(4), ProjectDouble.new(1)] }
+
+		subject { Projects.new(projects_array).last_id }
+
+		it { should be 4 }
 	end
 
 end

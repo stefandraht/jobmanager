@@ -1,3 +1,3 @@
-require './app/app.rb'
+require './lib/webapp.rb'
 
 run WebApp

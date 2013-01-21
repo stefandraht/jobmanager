@@ -1,12 +1,16 @@
-A user can create a new project:
+! A user can view all the projects
 
-!	A user can add a client name
+! A user can view a specific project
 
-!	A user can add a project name
+! A user can create a new project:
+
+	! A user can add a client name
+
+	! A user can add a project name
 
 	A user can specify internal or external
 
-!	The job number is automatically incremented
+! The job number is automatically incremented
 
 	A user can specify what facets of a project are created:
 
