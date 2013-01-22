@@ -52,7 +52,7 @@ class WebApp < Sinatra::Base
 		app.update_project(params)
 
 		flash[:notice] = "Updated project."
-		redirect '/'
+		redirect "/job/#{params[:id]}"
 	end
 
 

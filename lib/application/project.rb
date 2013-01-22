@@ -13,7 +13,7 @@ class Project
 
 	def update(args)
 		@status = args[:status] if args[:status]
-		@components += args[:components] if args[:components]
+		@components += args[:components] - components if args[:components]
 	end
 
 
