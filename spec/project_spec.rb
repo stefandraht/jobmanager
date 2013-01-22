@@ -3,7 +3,7 @@ require_relative '../lib/application/project'
 
 describe Project do
 	
-	let(:config_data) { {client: "Test Client", title: "Test Project", status: "external"} }
+	let(:config_data) { {id: 1, client: "Test Client", title: "Test Project", status: "external"} }
 
 	subject { Project.new(config_data) }
 
@@ -23,6 +23,28 @@ describe Project do
 		it { subject.id.should be nil }
 	end
 
+	describe "#update" do
+
+		subject { Project.new(config_data) }
+
+		context "when status is provided" do
+			let(:new_data) { {id: 1, status: "internal"} }
+
+			it "should have a new status" do
+				expect { subject.update(new_data) }.to change{subject.status}.from("external").to("internal")
+			end
+		end
+
+		context "when components are provided" do
+			let(:new_data) { {id: 1, components: ["design_server"]} }
+
+			it "should have a new status" do
+				expect { subject.update(new_data) }.to change{subject.components}.from([]).to(["design_server"])
+			end
+		end
+
+	end
+
 	describe "#name" do
 		let(:config_data) { {client: "Test Client", title: "Test Project", status: "external"} }
 
@@ -31,6 +53,16 @@ describe Project do
 		it { should include config_data[:client].sub(' ', '_') }
 
 		it { should include config_data[:title].sub(' ', '_') }
+
+		context "when status is 'external'" do
+			it { subject[0].should include 'J' }
+		end
+
+		context "when status is 'internal'" do
+			let(:config_data) { {client: "Test Client", title: "Test Project", status: "internal", components: []} }
+
+			it { subject[0].should include 'M' }
+		end
 
 	end
 

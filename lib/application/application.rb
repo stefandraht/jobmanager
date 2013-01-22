@@ -1,5 +1,7 @@
+require_relative 'core_ext'
 require_relative 'factories'
 require_relative 'data_module'
+require_relative 'project'
 
 class Application
 	attr_reader :projects
@@ -21,13 +23,19 @@ class Application
 
 
 	def create_new_project(args)
-		projects << ProjectFactory.build(args)
-		JSONDataModule.save_data(projects, DATABASE)
+		new_project = Project.new(args)
+		if projects << new_project
+			ComponentFactory.build(new_project.components)
+			JSONDataModule.save_data(projects, DATABASE)
+		end
 	end
 
 
 	def update_project(args)
-		projects.update_project(args)
+		project = get_project_by_id(args[:id].to_i)
+		project.update(args)
+		new_components = (args[:components] ||= []) - project.components
+		JSONDataModule.save_data(projects, DATABASE)
 	end
 
 
@@ -35,12 +43,13 @@ end
 
 
 
-prj = {
-	client: "Client",
-	title: "Title",
-	components: [:design_server]
-}
+# prj = {
+# 	client: "Client",
+# 	title: "Title",
+# 	components: [:design_server]
+# }
 
 # app = Application.new
-# app.create_new_project(prj)
+# #app.create_new_project(prj)
+# app.update_project({id: 1, status: "external"})
 # puts app.get_all_projects

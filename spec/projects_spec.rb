@@ -2,10 +2,12 @@ require 'rspec'
 require_relative '../lib/application/projects'
 
 class ProjectDouble
-	attr_accessor :id, :name
+	attr_accessor :id, :name, :client, :title
 
-	def initialize(id=nil)
+	def initialize(id=nil, client=nil, title=nil)
 		@id = id
+		@client = client ||= "Client#{rand(1000)}"
+		@title = title ||= "Title#{rand(1000)}"
 	end
 end
 
@@ -78,6 +80,32 @@ describe Projects do
 			it "should have a project with id = 2" do
 				subject.last.id.should be 2
 			end
+		end
+	end
+
+	describe "<<" do
+		let(:project) { ProjectDouble.new }
+
+		subject { 
+			projects = Projects.new
+			projects << project 
+		}
+
+		it { should include project }
+
+		it { should have(1).items }
+
+		context "when a project already exists with the same client and title" do
+			let(:project) { ProjectDouble.new(nil, "Test Client", "Test Title") }
+
+			let(:new_project) { ProjectDouble.new(nil, "Test Client", "Test Title") }
+
+			subject { 
+				projects = Projects.new(project)
+				projects  << new_project
+			}
+
+			it { should be false }
 		end
 	end
 

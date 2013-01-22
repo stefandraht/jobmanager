@@ -1,5 +1,6 @@
 require_relative 'project'
 require_relative 'projects'
+require_relative 'components'
 
 module ProjectsFactory
 
@@ -12,17 +13,20 @@ module ProjectsFactory
 end
 
 
-module ProjectFactory
+# module ProjectFactory
 
-	def self.build(project_config, project_class = Project)
-		project = project_class.new(project_config)
-		create_components(project.components)
-		project
-	end
+# 	def self.build(project_config, project_class = Project)
+# 		project = project_class.new(project_config)
+# 		project
+# 	end
 
-	def self.create_components(components)
-		components.each do |component|
-			puts component.to_s + " component"
+
+# end
+
+module ComponentFactory
+	def self.build(component_config, component_class = Component)
+		component_config.each do |component|
+			component_class.build(component)
 		end
 	end
 end

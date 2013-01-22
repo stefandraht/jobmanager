@@ -2,6 +2,7 @@
 	<h1><%= @project.name %></h1>
 	<h2>client: <%= @project.client %></h2>
 	<h2>project: <%= @project.title %></h2>
+	<h2>status: <%= @project.status %></h2>
 	
 	<% unless @project.components.empty? %>
 		<h3>components:</h3>
@@ -11,5 +12,7 @@
 			<% end %>
 		</ul>
 	<% end %>
+
+	<a href="<%= request.path_info + '/edit' %>">edit</a>
 		
 <% end %>

@@ -11,6 +11,12 @@ class Project
 	end
 
 
+	def update(args)
+		@status = args[:status] if args[:status]
+		@components += args[:components] if args[:components]
+	end
+
+
 	def name
 		"#{prefix}#{padded_job_number}_#{client_formatted}_#{title_formatted}"
 	end
@@ -21,7 +27,7 @@ class Project
 	end
 
 	def hashify
-		{id: id, client: client, title: title, status: status}
+		{id: id, client: client, title: title, status: status, components: components}
 	end
 
 	def to_json(*arg)
@@ -29,7 +35,8 @@ class Project
 			:id => id,
 			:client => client, 
 			:title => title,
-			:components => components
+			:components => components,
+			:status => status
 		}.to_json(*arg)
 	end
 

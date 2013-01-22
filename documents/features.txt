@@ -8,7 +8,11 @@
 
 	! A user can add a project name
 
-	A user can specify internal or external
+	! A user can specify internal or external
+
+	! Checks for duplicates
+
+  A user can add a special job number ?
 
 ! The job number is automatically incremented
 

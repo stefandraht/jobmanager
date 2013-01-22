@@ -12,3 +12,10 @@ class Hash
     self
   end
 end
+
+
+class Array
+  def clip n=1
+    take size - n
+  end
+end

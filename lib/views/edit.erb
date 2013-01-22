@@ -1,0 +1,18 @@
+<form name="input" action="/update" method="post">
+	<input type="hidden" name="id" value=<%= @project.id %> >
+
+	<h1> <%= @project.name %></h1>
+
+	<h2><%= @project.client %></h2>
+
+	<h2><%= @project.title %></h2>
+
+	<p>
+		<select name="status">
+			<option value="external" <%= 'selected="selected"' if @project.status == "external" %> >external</option>
+			<option value="internal"  <%= 'selected="selected"' if @project.status == "internal" %> >internal</option>
+		</select>
+	</p>
+
+	<input type="submit" value="Submit">
+</form>

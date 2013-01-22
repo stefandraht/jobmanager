@@ -11,7 +11,11 @@ class Projects < Array
 
 	def <<(project)
 		project.id ||= next_id
-		self.push project
+		if validate_project(project)
+			self.push project 
+		else
+			false
+		end
 	end
 
 	def get_by_id(id)
@@ -37,6 +41,11 @@ class Projects < Array
 
 	def next_id
 		last_id + 1
+	end
+
+	def validate_project(project)
+		duplicates = select {|i| i.client == project.client && i.title == project.title}
+		duplicates.size > 0 ? false : true
 	end
 
 end

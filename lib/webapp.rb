@@ -2,9 +2,8 @@ require 'bundler/setup'
 Bundler.require(:default)
 require 'sinatra'
 require 'sinatra/flash'
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/application')
-require 'application'
-require 'helpers/helpers'
+require_relative 'application/application'
+require_relative 'application/helpers/helpers'
 
 
 class WebApp < Sinatra::Base
@@ -22,13 +21,11 @@ class WebApp < Sinatra::Base
 	end
 
 
-
 	get '/job/:id' do
 		@project = app.get_project_by_id(params[:id].to_i)
 
 		erb :job, :layout => :job_layout
 	end
-
 
 
 	get '/new' do
@@ -37,11 +34,24 @@ class WebApp < Sinatra::Base
 	end
 
 
+	get '/job/:id/edit' do
+		@project = app.get_project_by_id(params[:id].to_i) 
+
+		erb :edit, :layout => :job_layout
+	end
+
 
 	post '/create' do
 		app.create_new_project(params)
 
 		flash[:notice] = "New job added."
+		redirect '/'
+	end
+
+	post '/update' do
+		app.update_project(params)
+
+		flash[:notice] = "Updated project."
 		redirect '/'
 	end
 
